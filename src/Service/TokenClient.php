@@ -2,13 +2,10 @@
 
 namespace VerisureLab\Library\AAAApiClient\Service;
 
-use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Psr7;
 use VerisureLab\Library\AAAApiClient\Exception\ClientRequestException;
 
-class Client
+class TokenClient extends AbstractClient
 {
     /**
      * @var string
@@ -20,21 +17,12 @@ class Client
      */
     private $clientSecret;
 
-    /**
-     * @var Client
-     */
-    private $client;
-
     public function __construct(string $clientId, string $clientSecret, string $baseUri)
     {
+        parent::__construct($baseUri);
+
         $this->clientId = $clientId;
         $this->clientSecret = $clientSecret;
-
-        $this->client = new GuzzleClient([
-            'base_uri' => $baseUri,
-            'timeout' => 5,
-            'http_errors' => true,
-        ]);
     }
 
     /**
@@ -81,47 +69,5 @@ class Client
                 'refresh_token' => $refreshToken,
             ]
         ]);
-    }
-
-    /**
-     * Get info token
-     *
-     * @param string $token
-     *
-     * @return array
-     *
-     * @throws ClientRequestException
-     * @throws GuzzleException
-     */
-    public function info(string $token): array
-    {
-        return $this->handleRequest('GET', '/info', [
-            \GuzzleHttp\RequestOptions::HEADERS => [
-                'Authorization' => 'Bearer '.$token,
-            ],
-        ]);
-    }
-
-    /**
-     * Execute the request
-     *
-     * @param string $method
-     * @param string $uri
-     * @param array $params
-     *
-     * @return array
-     *
-     * @throws ClientRequestException
-     * @throws GuzzleException
-     */
-    private function handleRequest(string $method, string $uri, array $params): array
-    {
-        try {
-            $response = $this->client->request($method, $uri, $params);
-        } catch (RequestException $e) {
-            throw new ClientRequestException(Psr7\str($e->getRequest()), $e->getCode(), $e);
-        }
-
-        return json_decode($response->getBody()->getContents(), true);
     }
 }

@@ -9,13 +9,13 @@ use VerisureLab\Library\AAAApiClient\ValueObject\Token;
 class AuthenticationService
 {
     /**
-     * @var Client
+     * @var TokenClient
      */
-    private $client;
+    private $tokenClient;
 
-    public function __construct(Client $client)
+    public function __construct(TokenClient $tokenClient)
     {
-        $this->client = $client;
+        $this->tokenClient = $tokenClient;
     }
 
     /**
@@ -32,7 +32,7 @@ class AuthenticationService
      */
     public function authenticate(string $username, string $password): Token
     {
-        return Token::fromAuthenticationResponse($this->client->obtainToken($username, $password));
+        return Token::fromAuthenticationResponse($this->tokenClient->obtainToken($username, $password));
     }
 
     /**
@@ -48,6 +48,6 @@ class AuthenticationService
      */
     public function refreshToken(string $refreshToken): Token
     {
-        return Token::fromAuthenticationResponse($this->client->refreshToken($refreshToken));
+        return Token::fromAuthenticationResponse($this->tokenClient->refreshToken($refreshToken));
     }
 }
