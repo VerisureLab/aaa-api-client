@@ -13,11 +13,14 @@ class AAAApiClientExtension extends ConfigurableExtension implements CompilerPas
 {
     protected function loadInternal(array $mergedConfig, ContainerBuilder $container): void
     {
+        $container->setParameter('verisure_lab.aaa_api_client.base_uri', $mergedConfig['base_uri']);
         $container->setParameter('verisure_lab.aaa_api_client.connections', $mergedConfig['connections']);
     }
 
     public function process(ContainerBuilder $container): void
     {
+        $baseUri = $container->getParameter('verisure_lab.aaa_api_client.base_uri');
+
         foreach ($container->getParameter('verisure_lab.aaa_api_client.connections') as $connectionName => $settings) {
             $tokenClientName = 'verisure_lab.aaa_api_client.token_client.'.$connectionName;
 
@@ -25,13 +28,13 @@ class AAAApiClientExtension extends ConfigurableExtension implements CompilerPas
             $tokenClientDefinition
                 ->addArgument($settings['client_id'])
                 ->addArgument($settings['client_secret'])
-                ->addArgument($settings['base_uri']);
+                ->addArgument($baseUri);
 
             $apiClientName = 'verisure_lab.aaa_api_client.api_client.'.$connectionName;
 
             $apiClientDefinition = $container->register($apiClientName, TokenClient::class);
             $apiClientDefinition
-                ->addArgument($settings['base_uri']);
+                ->addArgument($baseUri);
 
             $authenticationServiceName = 'verisure_lab.aaa_api_client.authentication_service.'.$connectionName;
 

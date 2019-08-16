@@ -14,16 +14,11 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
+                ->scalarNode('base_uri')->isRequired()->cannotBeEmpty()->end()
                 ->arrayNode('connections')
                     ->arrayPrototype()
                         ->scalarNode('client_id')->isRequired()->cannotBeEmpty()->end()
                         ->scalarNode('client_secret')->isRequired()->cannotBeEmpty()->end()
-                        ->scalarNode('base_uri')->isRequired()->cannotBeEmpty()->end()
-                        ->arrayNode('service')
-                            ->children()
-                                ->scalarNode('token_storage')->isRequired()->cannotBeEmpty()->end()
-                            ->end()
-                        ->end()
                     ->end()
                 ->end()
             ->end()
