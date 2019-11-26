@@ -7,7 +7,7 @@
     "authors": [],
     "require": {
         "php": ">=7.2",
-        "symfony/framework-bundle": "4.3.*",
+        "symfony/framework-bundle": "^4.3",
         "guzzlehttp/guzzle": "~6.0"
     },
     "autoload": {
